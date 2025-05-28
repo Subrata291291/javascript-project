@@ -132,7 +132,6 @@
       } else if (e.target.classList.contains('minus') && qty > 1) {
         qty--;
       }
-  
       qtyValueEl.textContent = qty;
     }
   });

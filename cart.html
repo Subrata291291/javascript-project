@@ -531,42 +531,45 @@
       document.querySelector('.total-price').textContent = '$' + subtotal.toFixed(2);
 
       // Attach button events
-      document.querySelectorAll('.product-item').forEach(item => {
-        const id = item.getAttribute('data-id');
-        const product = productList[id][0];
+      document.getElementById('product-details-box').addEventListener('click', function (e) {
+  const btn = e.target;
+  const productItem = btn.closest('.product-item');
+  if (!productItem) return;
 
-        const qtyValue = item.querySelector('.qty-value');
-        const rowTotal = item.querySelector('.row-total');
-        const plusBtn = item.querySelector('.plus');
-        const minusBtn = item.querySelector('.minus');
+  const id = productItem.getAttribute('data-id');
+  if (!productList[id]) return;
+  const product = productList[id][0];
 
-        const updateDisplay = () => {
-          qtyValue.textContent = product.quantity;
-          rowTotal.textContent = (product.quantity * product.price).toFixed(2);
-          updateSubtotal();
-          localStorage.setItem('product_list', JSON.stringify(productList));
-        };
+  const qtyValue = productItem.querySelector('.qty-value');
+  const rowTotal = productItem.querySelector('.row-total');
 
-        plusBtn.addEventListener('click', () => {
-          product.quantity++;
-          updateDisplay();
-        });
+  const updateDisplay = () => {
+    qtyValue.textContent = product.quantity;
+    rowTotal.textContent = (product.quantity * product.price).toFixed(2);
+    updateSubtotal();
+    localStorage.setItem('product_list', JSON.stringify(productList));
+  };
 
-        minusBtn.addEventListener('click', () => {
-          if (product.quantity > 1) {
-            product.quantity--;
-            updateDisplay();
-          }
-        });
+  if (btn.classList.contains('plus')) {
+    product.quantity++;
+    updateDisplay();
+  }
 
-        item.querySelector('.remove-item').addEventListener('click', e => {
-          e.preventDefault();
-          delete productList[id];
-          localStorage.setItem('product_list', JSON.stringify(productList));
-          item.remove();
-          updateSubtotal();
-        });
-      });
+  if (btn.classList.contains('minus')) {
+    if (product.quantity > 1) {
+      product.quantity--;
+      updateDisplay();
+    }
+  }
+
+  if (btn.classList.contains('remove-item')) {
+    e.preventDefault();
+    delete productList[id];
+    localStorage.setItem('product_list', JSON.stringify(productList));
+    productItem.remove();
+    updateSubtotal();
+  }
+});
 
       function updateSubtotal() {
         let newSubtotal = 0;
